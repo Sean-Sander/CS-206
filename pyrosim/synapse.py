@@ -26,6 +26,7 @@ class SYNAPSE:
 
         return self.weight
 
+
 # -------------------------- Private methods -------------------------
 
     def Determine_Source_Neuron_Name(self,line):
