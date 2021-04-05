@@ -8,10 +8,18 @@ import random
 
 import constants as c
 from simulation import *
+import sys
 
-simulation = SIMULATION()
+if len(sys.argv) >= 1:
+    directOrGUI = sys.argv[1]
+else:
+    directOrGUI = ""
+
+simulation = SIMULATION(directOrGUI)
 
 simulation.Run()
+
+simulation.Get_Fitness()
 
 # physicsClient = p.connect(p.GUI)
 # p.setAdditionalSearchPath(pybullet_data.getDataPath())
