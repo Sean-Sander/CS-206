@@ -1,5 +1,6 @@
 import pyrosim.pyrosim as pyrosim
 import random
+import time
 
 length = 1
 width = 1
@@ -10,6 +11,7 @@ def Create_World():
     pyrosim.Send_Cube(name="Box", pos=[2, 2, .5],
                       size=[length, width, height])
     pyrosim.End()
+    #time.sleep(1)
 
 def Generate_Body():
     pyrosim.Start_URDF("body.urdf")
@@ -29,6 +31,7 @@ def Generate_Body():
     pyrosim.Send_Cube(name="FrontLeg", pos=[.5, 0, -.5],
                       size=[length, width, height])
     pyrosim.End()
+    #time.sleep(1)
 
 def Generate_Brain():
     pyrosim.Start_NeuralNetwork("brain.nndf")
@@ -40,8 +43,8 @@ def Generate_Brain():
     for i in range(3):
         for j in range(3, 5):
             pyrosim.Send_Synapse(sourceNeuronName=i, targetNeuronName=j, weight=random.randint(-1, 1))
-
     pyrosim.End()
+    #time.sleep(1)
 
 def Create_Robot():
     pyrosim.Start_URDF("body.urdf")

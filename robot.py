@@ -3,17 +3,24 @@ import pyrosim.pyrosim as pyrosim
 import numpy as np
 from sensor import SENSOR
 from motor import MOTOR
+from constants import *
+import time
+import os
 
 from pyrosim.neuralNetwork import NEURAL_NETWORK
 
 import constants as c
 class ROBOT:
-    def __init__(self):
+    def __init__(self, solutionID):
+        while not os.path.exists('body.urdf'):
+            time.sleep(0.01)
         self.robot = p.loadURDF('body.urdf')
         pyrosim.Prepare_To_Simulate("body.urdf")
+        self.nn = NEURAL_NETWORK("brain" + str(solutionID) + ".nndf")
         self.Prepare_To_Sense()
         self.Prepare_To_Act()
-        self.nn = NEURAL_NETWORK("brain.nndf")
+        os.system("del brain" + solutionID + ".nndf")
+
     def Prepare_To_Sense(self):
         self.sensors = {}
         for linkname in pyrosim.linkNamesToIndices:
@@ -29,23 +36,29 @@ class ROBOT:
         for neuronName in self.nn.Get_Neuron_Names():
             if self.nn.Is_Motor_Neuron(neuronName):
                 jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)
-                desiredAngle = self.nn.Get_Value_Of(neuronName)
-                #print(jointName, neuronName, desiredAngle)
+                desiredAngle = motorJointRange * self.nn.Get_Value_Of(neuronName)
+                if DEBUG:
+                    print(jointName, neuronName, desiredAngle)
                 self.motors[jointName].Set_Value(desiredAngle, self.robot, p)
 
         #for b in self.motors:
             #self.motors[b].Set_Value(time, self.robot, p)
     def Think(self):
         self.nn.Update()
-        self.nn.Print()
+        if DEBUG:
+            self.nn.Print()
 
-    def Get_Fitness(self):
+    def Get_Fitness(self, solutionID):
         self.stateOfLinkZero = p.getLinkState(self.robot, 0)
         self.positionOfLinkZero = self.stateOfLinkZero[0]
         self.XCoordinateOfLinkZero = self.positionOfLinkZero[0]
         #print(self.stateOfLinkZero)
         #print(self.positionOfLinkZero)
         #print(self.XCoordinateOfLinkZero)
-        with open("data/fitness.txt", "w") as f:
+        with open("tmp" + str(solutionID) + ".txt", "w") as f:
             f.write(str(self.XCoordinateOfLinkZero))
+        os.system("rename tmp" + str(solutionID) + ".txt fitness" + str(solutionID) + ".txt")
+        #print(solutionID)
+        #with open("fitness" + str(solutionID) + ".txt", "w") as f:
+        #     f.write(str(self.XCoordinateOfLinkZero))
 

@@ -12,10 +12,11 @@ import sys
 
 if len(sys.argv) >= 1:
     directOrGUI = sys.argv[1]
+    solutionID = sys.argv[2]
 else:
     directOrGUI = ""
 
-simulation = SIMULATION(directOrGUI)
+simulation = SIMULATION(directOrGUI, solutionID)
 
 simulation.Run()
 
