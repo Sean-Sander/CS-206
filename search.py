@@ -1,4 +1,5 @@
 import os
+import sys
 from parallelHillClimber import *
 
 phc = PARALLEL_HILL_CLIMBER()

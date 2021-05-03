@@ -49,14 +49,30 @@ class ROBOT:
             self.nn.Print()
 
     def Get_Fitness(self, solutionID):
+        # Torso X
         self.stateOfLinkZero = p.getLinkState(self.robot, 0)
         self.positionOfLinkZero = self.stateOfLinkZero[0]
         self.XCoordinateOfLinkZero = self.positionOfLinkZero[0]
-        #print(self.stateOfLinkZero)
-        #print(self.positionOfLinkZero)
-        #print(self.XCoordinateOfLinkZero)
+
+        # Torso Z
+        self.ZCoordinateOfLinkZero = self.positionOfLinkZero[2]
+
+        #print('HEIGHT:', self.ZCoordinateOfLinkZero)
+        x_val = np.abs(self.XCoordinateOfLinkZero)
+        z_val = self.ZCoordinateOfLinkZero
+        #print('HEIGHT:', z_val)
+        if z_val >= 1 and x_val >= 1:
+            self.fitness = np.abs(x_val * z_val)
+        elif z_val < 1.5:
+            self.fitness = np.abs(x_val * .075*z_val)
+        elif x_val < 1:
+            self.fitness = np.abs(.075*x_val * z_val)
+        else:
+            self.fitness = np.abs(0.05*(x_val * z_val))
+
         with open("tmp" + str(solutionID) + ".txt", "w") as f:
-            f.write(str(self.XCoordinateOfLinkZero))
+            f.write(str(self.fitness))
+            print(self.fitness)
         os.system("rename tmp" + str(solutionID) + ".txt fitness" + str(solutionID) + ".txt")
         #print(solutionID)
         #with open("fitness" + str(solutionID) + ".txt", "w") as f:

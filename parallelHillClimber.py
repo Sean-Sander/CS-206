@@ -30,6 +30,7 @@ class PARALLEL_HILL_CLIMBER:
             value.Mutate()
 
     def Print(self):
+        #DEBUG = True
         if DEBUG:
             for keys, values in self.parents.items():
                 print(' ')
@@ -38,7 +39,7 @@ class PARALLEL_HILL_CLIMBER:
 
     def Select(self):
         for keys, values in self.parents.items():
-            if self.children[keys].fitness < values.fitness:
+            if self.children[keys].fitness > values.fitness:
                 self.parents[keys] = self.children[keys]
 
     def Evolve_For_One_Generation(self):
@@ -55,13 +56,17 @@ class PARALLEL_HILL_CLIMBER:
             solutions[robot].Wait_For_Simulation_To_End()
 
     def Show_Best(self):
-        lowest = 100000
+        lowest = 0
         lowest_key = -1
         for keys, values in self.parents.items():
-            if values.fitness < lowest:
+            if values.fitness > lowest:
                 lowest = values.fitness
                 lowest_key = keys
+                print(values.fitness)
         self.parents[lowest_key].Start_Simulation('GUI')
+        # with open(self.weights_file + ".txt", 'w') as f:
+        #     np.save(f, self.parents[lowest_key].weights)
+        #print(self.parents[lowest_key].weights)
 
     def Evolve(self):
         self.Evaluate(self.parents)
